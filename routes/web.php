@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Backend\ChangePasswordController;
+use App\Http\Controllers\Backend\CityController;
 use App\Http\Controllers\Backend\CountryController;
+use App\Http\Controllers\Backend\DepartmentController;
+use App\Http\Controllers\Backend\StateController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\UserController;
@@ -25,6 +28,13 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::resource('users', UserController::class);
-Route::resource('country', CountryController::class);
-Route::post('/users/{user}/change-password', [ChangePasswordController::class, 'change_password'])->name('user.change.password');
+Route::resource('users', UserController::class)->middleware('auth');
+Route::resource('countries', CountryController::class)->middleware('auth');
+Route::resource('states', StateController::class)->middleware('auth');
+Route::resource('cities', CityController::class)->middleware('auth');
+Route::resource('departments', DepartmentController::class)->middleware('auth');
+Route::post('/users/{user}/change-password', [ChangePasswordController::class, 'change_password'])->name('user.change.password')->middleware('auth');
+
+Route::get('{any}', function () {
+    return view('employees.index');
+})->where('{any}', '.*');
