@@ -52,7 +52,7 @@
             <hr class="sidebar-divider">
 
             <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="/employees">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Employee Managment</span></a>
             </li>
@@ -69,7 +69,7 @@
                 </a>
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                        
+
                         <a class="collapse-item" href="{{route('countries.index')}}">Country</a>
                         <a class="collapse-item" href="{{route('states.index')}}">State</a>
                         <a class="collapse-item" href="{{route('cities.index')}}">City</a>
@@ -88,7 +88,7 @@
                 <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
-                       
+
                         <a class="collapse-item" href="{{route('users.index')}}">User</a>
                         <a class="collapse-item" href="utilities-border.html">Role</a>
                         <a class="collapse-item" href="utilities-animation.html">Permission</a>
@@ -140,7 +140,7 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
-                        @yield('content')
+                    @yield('content')
                 </div>
                 <!-- /.container-fluid -->
 
