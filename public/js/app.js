@@ -2764,22 +2764,64 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       employees: [],
       showMessage: false,
-      message: []
+      message: [],
+      search: null,
+      selectedDepartment: null,
+      departments: []
     };
+  },
+  watch: {
+    search: function search() {
+      this.getEmployees();
+    },
+    selectedDepartment: function selectedDepartment() {
+      this.getEmployees();
+    }
   },
   created: function created() {
     this.getEmployees();
+    this.getDepartments();
   },
   methods: {
     getEmployees: function getEmployees() {
       var _this = this;
 
-      axios.get("/api/employees").then(function (res) {
+      axios.get("/api/employees", {
+        params: {
+          search: this.search,
+          department_id: this.selectedDepartment
+        }
+      }).then(function (res) {
         _this.employees = res.data.data;
       })["catch"](function (error) {
         console.log(console.error);
@@ -2788,11 +2830,20 @@ __webpack_require__.r(__webpack_exports__);
     deleteEmployee: function deleteEmployee(id) {
       var _this2 = this;
 
-      axios["delete"]('api/employees/' + id).then(function (res) {
+      axios["delete"]("api/employees/" + id).then(function (res) {
         _this2.showMessage = true;
         _this2.message = res.data;
 
         _this2.getEmployees();
+      });
+    },
+    getDepartments: function getDepartments() {
+      var _this3 = this;
+
+      axios.get("/api/employees/departments").then(function (res) {
+        _this3.departments = res.data;
+      })["catch"](function (error) {
+        console.log(console.error);
       });
     }
   }
@@ -61137,31 +61188,73 @@ var render = function() {
               _c("div", { staticClass: "col" }, [
                 _c("form", [
                   _c("div", { staticClass: "form-row align-items-center" }, [
-                    _c("div", { staticClass: "col" }, [
+                    _c("div", { staticClass: " form-group col" }, [
                       _c("input", {
                         directives: [
                           {
                             name: "model",
-                            rawName: "v-model",
+                            rawName: "v-model.lazy",
                             value: _vm.search,
-                            expression: "search"
+                            expression: "search",
+                            modifiers: { lazy: true }
                           }
                         ],
                         staticClass: "form-control mb-2",
                         attrs: { type: "search" },
                         domProps: { value: _vm.search },
                         on: {
-                          input: function($event) {
-                            if ($event.target.composing) {
-                              return
-                            }
+                          change: function($event) {
                             _vm.search = $event.target.value
                           }
                         }
                       })
                     ]),
                     _vm._v(" "),
-                    _vm._m(0)
+                    _vm._m(0),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "form-group col" }, [
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.selectedDepartment,
+                              expression: "selectedDepartment"
+                            }
+                          ],
+                          staticClass: "custom-select",
+                          attrs: { id: "department_id", name: "department_id" },
+                          on: {
+                            change: function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.selectedDepartment = $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            }
+                          }
+                        },
+                        _vm._l(_vm.departments, function(department) {
+                          return _c(
+                            "option",
+                            {
+                              key: department.id,
+                              domProps: { value: department.id }
+                            },
+                            [_vm._v(_vm._s(department.name))]
+                          )
+                        }),
+                        0
+                      )
+                    ])
                   ])
                 ])
               ]),
@@ -61252,7 +61345,11 @@ var render = function() {
                               }
                             }
                           },
-                          [_vm._v("Delete")]
+                          [
+                            _vm._v(
+                              "\n                                        Delete\n                                    "
+                            )
+                          ]
                         )
                       ],
                       1
@@ -61273,7 +61370,7 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col" }, [
+    return _c("div", { staticClass: "col form-group" }, [
       _c("button", { staticClass: "btn btn-primary mb-2 btn-sm" }, [
         _vm._v(
           "\n                                            Search\n                                        "

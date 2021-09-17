@@ -6,26 +6,44 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="alert alert-success" v-if="showMessage">
-                            {{message}}
+                            {{ message }}
                         </div>
 
                         <div class="row">
                             <div class="col">
                                 <form>
                                     <div class="form-row align-items-center">
-                                        <div class="col">
+                                        <div class=" form-group col">
                                             <input
                                                 type="search"
-                                                v-model="search"
+                                                v-model.lazy="search"
                                                 class="form-control mb-2"
                                             />
                                         </div>
-                                        <div class="col">
+                                        <div class="col form-group">
                                             <button
                                                 class="btn btn-primary mb-2 btn-sm"
+                                                
                                             >
                                                 Search
                                             </button>
+                                        </div>
+                                        <div class="form-group col">
+                                            <select
+                                                class="custom-select"
+                                                id="department_id"
+                                                name="department_id"
+                                                v-model="selectedDepartment"
+                                            >
+                                                <option
+                                                    v-for="department in departments"
+                                                    :key="department.id"
+                                                    :value="department.id"
+                                                    >{{
+                                                        department.name
+                                                    }}</option
+                                                >
+                                            </select>
                                         </div>
                                     </div>
                                 </form>
@@ -76,7 +94,14 @@
                                             class="btn btn-primary btn-sm"
                                             >Edit</router-link
                                         >
-                                       <button class="btn btn-danger btn-sm" @click.prevent="deleteEmployee(employee.id)">Delete</button>
+                                        <button
+                                            class="btn btn-danger btn-sm"
+                                            @click.prevent="
+                                                deleteEmployee(employee.id)
+                                            "
+                                        >
+                                            Delete
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -95,15 +120,32 @@ export default {
             employees: [],
             showMessage: false,
             message: [],
+            search: null,
+            selectedDepartment: null,
+            departments: []
         };
+    },
+    watch: {
+        search(){
+            this.getEmployees();
+        },
+        selectedDepartment(){
+            this.getEmployees();
+        }
     },
     created() {
         this.getEmployees();
+        this.getDepartments();
     },
     methods: {
         getEmployees() {
             axios
-                .get("/api/employees")
+                .get("/api/employees", {
+                    params: {
+                        search: this.search,
+                        department_id: this.selectedDepartment
+                    }
+                })
                 .then(res => {
                     this.employees = res.data.data;
                 })
@@ -111,12 +153,22 @@ export default {
                     console.log(console.error);
                 });
         },
-        deleteEmployee(id){
-            axios.delete('api/employees/'+ id).then( res => {
-               this.showMessage = true;
-               this.message = res.data;
-               this.getEmployees();
-            })
+        deleteEmployee(id) {
+            axios.delete("api/employees/" + id).then(res => {
+                this.showMessage = true;
+                this.message = res.data;
+                this.getEmployees();
+            });
+        },
+        getDepartments() {
+            axios
+                .get("/api/employees/departments")
+                .then(res => {
+                    this.departments = res.data;
+                })
+                .catch(error => {
+                    console.log(console.error);
+                });
         }
     }
 };
